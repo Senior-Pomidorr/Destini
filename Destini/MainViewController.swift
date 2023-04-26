@@ -14,9 +14,7 @@ class MainViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .red
-        storyLabel.text = storyBrain.questionTextGet()
-        labelOne.text = storyBrain.answerTextGetOne()
-        labelTwo.text = storyBrain.answerTextGetTwo()
+        update()
         layout()
     }
     
@@ -29,19 +27,28 @@ class MainViewController: UIViewController {
         return imageView
     }()
     
-    private let buttonOne: UIButton = {
+    private lazy var buttonOne: UIButton = {
         let buttonOne = UIButton()
         let image = UIImage(named: Image.backgroundColorButtonOne) as UIImage?
-        buttonOne.setImage(image, for: .normal)
+        buttonOne.setBackgroundImage(image, for: .normal)
+        buttonOne.titleLabel?.font = .systemFont(ofSize: 20)
         buttonOne.translatesAutoresizingMaskIntoConstraints = false
+        buttonOne.setTitleColor(.white, for: .normal)
+        buttonOne.addTarget(self, action: #selector(answerButton), for: .touchUpInside)
+        buttonOne.setTitle(storyBrain.answerTextGetOne(), for: .normal)
         return buttonOne
     }()
     
-    private let buttonTwo: UIButton = {
+    private lazy var buttonTwo: UIButton = {
         let buttonTwo = UIButton()
         let image = UIImage(named: Image.backgroundColorButtonTwo) as UIImage?
-        buttonTwo.setImage(image, for: .normal)
+        buttonTwo.setBackgroundImage(image, for: .normal)
+        buttonTwo.setTitle(storyBrain.answerTextGetTwo(), for: .normal)
         buttonTwo.translatesAutoresizingMaskIntoConstraints = false
+        buttonTwo.setTitleColor(.white, for: .normal)
+        buttonTwo.clipsToBounds = true
+        buttonTwo.titleLabel?.font = .systemFont(ofSize: 20)
+        buttonTwo.addTarget(self, action: #selector(answerButton), for: .touchUpInside)
         return buttonTwo
     }()
     
@@ -56,46 +63,37 @@ class MainViewController: UIViewController {
         return storyLabel
     }()
     
-    private let labelOne: UILabel = {
-        let labelOne = UILabel()
-        labelOne.text = "ChoiceOne"
-        labelOne.translatesAutoresizingMaskIntoConstraints = false
-        labelOne.textAlignment = .center
-        labelOne.textColor = .white
-        labelOne.numberOfLines = 0
-        labelOne.font = .systemFont(ofSize: 22)
-        return labelOne
-    }()
+//    private let labelOne: UILabel = {
+//        let labelOne = UILabel()
+//        labelOne.text = "ChoiceOne"
+//        labelOne.translatesAutoresizingMaskIntoConstraints = false
+//        labelOne.textAlignment = .center
+//        labelOne.textColor = .white
+//        labelOne.numberOfLines = 0
+//        labelOne.font = .systemFont(ofSize: 22)
+//        return labelOne
+//    }()
+//
+//    private let labelTwo: UILabel = {
+//        let labelTwo = UILabel()
+//        labelTwo.text = "ChoiceTwo"
+//        labelTwo.translatesAutoresizingMaskIntoConstraints = false
+//        labelTwo.textAlignment = .center
+//        labelTwo.textColor = .white
+//        labelTwo.numberOfLines = 0
+//        labelTwo.font = .systemFont(ofSize: 22)
+//        return labelTwo
+//    }()
     
-    private let labelTwo: UILabel = {
-        let labelTwo = UILabel()
-        labelTwo.text = "ChoiceTwo"
-        labelTwo.translatesAutoresizingMaskIntoConstraints = false
-        labelTwo.textAlignment = .center
-        labelTwo.textColor = .white
-        labelTwo.numberOfLines = 0
-        labelTwo.font = .systemFont(ofSize: 22)
-        return labelTwo
-    }()
-    
-    func answerButton(_ sender: UIButton) {
-        
-        let userAnswer = sender.currentTitle!
-        let userIsRight = storyBrain.checkAnswer(userAnswer)
-        
-        userIsRight == true ? (sender.backgroundColor = .green) : (sender.backgroundColor = .red)
-        
-        Timer.scheduledTimer(timeInterval: 0.3, target: self, selector: #selector(update), userInfo: nil, repeats: false)
-        storyBrain.nextQuestion()
-    
+   @objc func answerButton(_ sender: UIButton) {
+        storyBrain.nextQuestion(сhoice: sender.currentTitle!)
+        update()
     }
     
-    @objc func update() {
+    func update() {
         storyLabel.text = storyBrain.questionTextGet()
-        labelOne.text = storyBrain.answerTextGetOne()
-        labelTwo.text = storyBrain.answerTextGetTwo()
-        buttonOne.backgroundColor = .clear
-        buttonTwo.backgroundColor = .clear
+        buttonOne.setTitle(storyBrain.answerTextGetOne(), for: .normal)
+        buttonTwo.setTitle(storyBrain.answerTextGetTwo(), for: .normal)
     }
     
 }
@@ -103,11 +101,11 @@ class MainViewController: UIViewController {
 extension MainViewController {
     func layout() {
         view.addSubview(imageView)
-        imageView.addSubview(buttonOne)
-        imageView.addSubview(buttonTwo)
-        imageView.addSubview(storyLabel)
-        buttonOne.addSubview(labelOne)
-        buttonTwo.addSubview(labelTwo)
+        view.addSubview(storyLabel)
+        view.addSubview(buttonOne)
+        view.addSubview(buttonTwo)
+//        buttonOne.addSubview(labelOne)
+//        buttonTwo.addSubview(labelTwo)
         
         NSLayoutConstraint.activate([
             imageView.topAnchor.constraint(equalTo: view.topAnchor),
@@ -119,7 +117,6 @@ extension MainViewController {
             storyLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
             storyLabel.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20),
             storyLabel.bottomAnchor.constraint(equalTo: buttonOne.topAnchor, constant: 20),
-            
             
             buttonTwo.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -30),
             buttonTwo.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
@@ -133,15 +130,15 @@ extension MainViewController {
             
             //            labelOne.centerXAnchor.constraint(equalTo: buttonOne.centerXAnchor),
             //            labelOne.heightAnchor.constraint(equalToConstant: 50),
-            labelOne.leadingAnchor.constraint(equalTo: buttonOne.leadingAnchor, constant: 20),
-            labelOne.trailingAnchor.constraint(equalTo: buttonOne.trailingAnchor, constant: -20),
-            labelOne.bottomAnchor.constraint(equalTo: buttonOne.bottomAnchor, constant: -10),
-            labelOne.topAnchor.constraint(equalTo: buttonOne.topAnchor, constant: 10),
-            
-            labelTwo.leadingAnchor.constraint(equalTo: buttonTwo.leadingAnchor, constant: 20),
-            labelTwo.trailingAnchor.constraint(equalTo: buttonTwo.trailingAnchor, constant: -20),
-            labelTwo.bottomAnchor.constraint(equalTo: buttonTwo.bottomAnchor, constant: -10),
-            labelTwo.topAnchor.constraint(equalTo: buttonTwo.topAnchor, constant: 10),
+//            labelOne.leadingAnchor.constraint(equalTo: buttonOne.leadingAnchor, constant: 20),
+//            labelOne.trailingAnchor.constraint(equalTo: buttonOne.trailingAnchor, constant: -20),
+//            labelOne.bottomAnchor.constraint(equalTo: buttonOne.bottomAnchor, constant: -10),
+//            labelOne.topAnchor.constraint(equalTo: buttonOne.topAnchor, constant: 10),
+//
+//            labelTwo.leadingAnchor.constraint(equalTo: buttonTwo.leadingAnchor, constant: 20),
+//            labelTwo.trailingAnchor.constraint(equalTo: buttonTwo.trailingAnchor, constant: -20),
+//            labelTwo.bottomAnchor.constraint(equalTo: buttonTwo.bottomAnchor, constant: -10),
+//            labelTwo.topAnchor.constraint(equalTo: buttonTwo.topAnchor, constant: 10),
         ])
     }
 }

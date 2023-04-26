@@ -10,5 +10,7 @@ import Foundation
 struct Story {
     var title: String
     var choice1: String
+    var choiceOneNumber: Int
     var choice2: String
+    var choiceTwoNumber: Int
 }
