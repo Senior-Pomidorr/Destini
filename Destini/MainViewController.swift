@@ -9,9 +9,14 @@ import UIKit
 
 class MainViewController: UIViewController {
     
+    private var storyBrain = StoryBrain()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .red
+        storyLabel.text = storyBrain.questionTextGet()
+        labelOne.text = storyBrain.answerTextGetOne()
+        labelTwo.text = storyBrain.answerTextGetTwo()
         layout()
     }
     
@@ -46,6 +51,7 @@ class MainViewController: UIViewController {
         storyLabel.translatesAutoresizingMaskIntoConstraints = false
         storyLabel.textAlignment = .left
         storyLabel.textColor = .white
+        storyLabel.numberOfLines = 0
         storyLabel.font = .systemFont(ofSize: 25)
         return storyLabel
     }()
@@ -56,6 +62,7 @@ class MainViewController: UIViewController {
         labelOne.translatesAutoresizingMaskIntoConstraints = false
         labelOne.textAlignment = .center
         labelOne.textColor = .white
+        labelOne.numberOfLines = 0
         labelOne.font = .systemFont(ofSize: 22)
         return labelOne
     }()
@@ -66,9 +73,31 @@ class MainViewController: UIViewController {
         labelTwo.translatesAutoresizingMaskIntoConstraints = false
         labelTwo.textAlignment = .center
         labelTwo.textColor = .white
+        labelTwo.numberOfLines = 0
         labelTwo.font = .systemFont(ofSize: 22)
         return labelTwo
     }()
+    
+    func answerButton(_ sender: UIButton) {
+        
+        let userAnswer = sender.currentTitle!
+        let userIsRight = storyBrain.checkAnswer(userAnswer)
+        
+        userIsRight == true ? (sender.backgroundColor = .green) : (sender.backgroundColor = .red)
+        
+        Timer.scheduledTimer(timeInterval: 0.3, target: self, selector: #selector(update), userInfo: nil, repeats: false)
+        storyBrain.nextQuestion()
+    
+    }
+    
+    @objc func update() {
+        storyLabel.text = storyBrain.questionTextGet()
+        labelOne.text = storyBrain.answerTextGetOne()
+        labelTwo.text = storyBrain.answerTextGetTwo()
+        buttonOne.backgroundColor = .clear
+        buttonTwo.backgroundColor = .clear
+    }
+    
 }
 
 extension MainViewController {
