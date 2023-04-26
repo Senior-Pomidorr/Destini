@@ -40,6 +40,16 @@ class MainViewController: UIViewController {
         return buttonTwo
     }()
     
+    private let storyLabel: UILabel = {
+        let storyLabel = UILabel()
+        storyLabel.text = "LabelText"
+        storyLabel.translatesAutoresizingMaskIntoConstraints = false
+        storyLabel.textAlignment = .left
+        storyLabel.textColor = .white
+        storyLabel.font = .systemFont(ofSize: 25)
+        return storyLabel
+    }()
+    
     private let labelOne: UILabel = {
         let labelOne = UILabel()
         labelOne.text = "ChoiceOne"
@@ -66,6 +76,7 @@ extension MainViewController {
         view.addSubview(imageView)
         imageView.addSubview(buttonOne)
         imageView.addSubview(buttonTwo)
+        imageView.addSubview(storyLabel)
         buttonOne.addSubview(labelOne)
         buttonTwo.addSubview(labelTwo)
         
@@ -74,6 +85,11 @@ extension MainViewController {
             imageView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             imageView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
             imageView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
+            
+            storyLabel.topAnchor.constraint(equalTo: view.topAnchor, constant: 30),
+            storyLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
+            storyLabel.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20),
+            storyLabel.bottomAnchor.constraint(equalTo: buttonOne.topAnchor, constant: 20),
             
             
             buttonTwo.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -30),
